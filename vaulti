@@ -209,7 +209,7 @@ def setup_yaml() -> YAML:
     # Don't strip out unneccesary quotes around scalar variables
     yaml.preserve_quotes = True
     # Prevent the yaml dumper from line-breaking the longer variables
-    yaml.width = float("inf")
+    yaml.width = 2147483647
     yaml.explicit_start = True  # Add --- at the start of the file
     yaml.explicit_end = True  # Add ... at the end of the file
     # Ensure list items are indented, not inline with the parent variable
