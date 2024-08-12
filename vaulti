@@ -237,7 +237,7 @@ def display_yaml_data_and_exit(yaml_data):
     sys.exit(0)
 
 
-def open_file_in_default_editor(file: str):
+def open_file_in_default_editor(file_name: str):
     """Get the default editor and open the provided file
 
     Ignores additional parameters provided to the editor.
@@ -247,8 +247,8 @@ def open_file_in_default_editor(file: str):
         editor = os.environ["VISUAL"].split()
     except KeyError:
         editor = os.environ.get("EDITOR", "nano").split()
-    editor.append(file)  # Add the filename at the end of the command
     logger.info("Opening editor with params: %s", str(editor))
+    editor.append(file_name)  # Add the filename at the end of the command
     subprocess.call(editor)
 
 
