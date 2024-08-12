@@ -252,6 +252,16 @@ def open_file_in_default_editor(file: Path):
     subprocess.call(editor)
 
 
+def write_data_to_temporary_file(data_to_write):
+    yaml = setup_yaml()
+    # Create a temporary file
+    with tempfile.NamedTemporaryFile(
+        mode="w", delete=False, prefix="vaultedit_", suffix=".yaml"
+    ) as temp_file:
+        yaml.dump(data_to_write, temp_file)
+        return temp_file.name
+
+
 def main(filenames, view_only: bool):
     yaml = setup_yaml()
     for filename in filenames:
@@ -259,18 +269,15 @@ def main(filenames, view_only: bool):
         # later) (Deepcopy doesn't seem to work, so just load it before
         # defining custom constructors
         original_data = read_yaml_file(filename)
-
         # Load the yaml file into memory (will now auto-decrypt vault because
         # of the constructors)
         decrypted_data = read_encrypted_yaml_file(filename)
 
         if view_only:
             display_yaml_data_and_exit(decrypted_data)
-
         # Run the rest inside a try-finally block to make sure the decrypted
         # tmp-file is deleted afterwards
         try:
-
             # Register the constructor to let the yaml loader do the
             # reencrypting for you Adding it this late to avoid encryption step
             # before the editor opens
@@ -279,14 +286,8 @@ def main(filenames, view_only: bool):
             )
             yaml.constructor.add_constructor(INVALID_TAG_NAME, constructor_tmp_invalid)
 
-            # Create a temporary file
-            with tempfile.NamedTemporaryFile(
-                mode="w", delete=False, prefix="vaultedit_", suffix=".yaml"
-            ) as temp_file:
-                yaml.dump(decrypted_data, temp_file)
-                temp_filename = temp_file.name
-                created_time = os.stat(temp_file.name).st_ctime
-
+            temp_filename = write_data_to_temporary_file(decrypted_data)
+            created_time = os.stat(temp_filename).st_ctime
             open_file_in_default_editor(temp_filename)
             # After the editor is closed, reload the yaml from the tmp-file
             # (will auto-reencrypt because of the constructors)
@@ -294,7 +295,7 @@ def main(filenames, view_only: bool):
                 edited_data = yaml.load(file)
 
             # Don't do anything if the file hasn't been changed since its creation
-            changed_time = os.stat(temp_file.name).st_ctime
+            changed_time = os.stat(temp_filename).st_ctime
             if created_time != changed_time:
 
                 # Loop through all the values of the new data, making sure that
