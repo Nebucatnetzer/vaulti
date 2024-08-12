@@ -73,7 +73,6 @@ from ruamel.yaml.error import StringMark  # To be able to insert newlines where 
 
 
 DECRYPTED_TAG_NAME = "!ENCRYPTED"
-ENSURE_NEWLINES_AFTER_VAULTED = True
 INVALID_TAG_NAME = "!VAULT_INVALID"
 VAULT = None
 
@@ -142,12 +141,11 @@ def compare_and_update(original_data, reencrypted_data):
     # Loop recursively through everything
     if is_commented_map(original_data) and is_commented_map(reencrypted_data):
         for key in reencrypted_data:
-            if ENSURE_NEWLINES_AFTER_VAULTED:
-                if (
-                    is_tagged_scalar(reencrypted_data[key])
-                    and reencrypted_data[key].tag.value == "!vault"
-                ):
-                    ensure_newline(reencrypted_data, key)
+            if (
+                is_tagged_scalar(reencrypted_data[key])
+                and reencrypted_data[key].tag.value == "!vault"
+            ):
+                ensure_newline(reencrypted_data, key)
             if key in original_data:
                 # If ansible vault fails, use the new data instead of crashing
                 try:
@@ -160,12 +158,11 @@ def compare_and_update(original_data, reencrypted_data):
 
     elif is_commented_seq(original_data) and is_commented_seq(reencrypted_data):
         for i in range(len(reencrypted_data)):
-            if ENSURE_NEWLINES_AFTER_VAULTED:
-                if (
-                    is_tagged_scalar(reencrypted_data[i])
-                    and reencrypted_data[i].tag.value == "!vault"
-                ):
-                    ensure_newline(reencrypted_data, i)
+            if (
+                is_tagged_scalar(reencrypted_data[i])
+                and reencrypted_data[i].tag.value == "!vault"
+            ):
+                ensure_newline(reencrypted_data, i)
             # If ansible vault fails, use the new data instead of crashing
             try:
                 reencrypted_data[i] = compare_and_update(
