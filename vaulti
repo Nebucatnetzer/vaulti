@@ -121,15 +121,15 @@ def constructor_tmp_invalid(node):
 
 
 def is_commented_map(data) -> bool:
-    isinstance(data, CommentedMap)
+    return isinstance(data, CommentedMap)
 
 
 def is_commented_seq(data) -> bool:
-    isinstance(data, CommentedSeq)
+    return isinstance(data, CommentedSeq)
 
 
 def is_tagged_scalar(data) -> bool:
-    isinstance(data, TaggedScalar)
+    return isinstance(data, TaggedScalar)
 
 
 def compare_and_update(original_data, reencrypted_data):
