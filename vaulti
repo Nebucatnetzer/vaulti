@@ -247,8 +247,8 @@ def open_file_in_default_editor(file_name: str):
         editor = os.environ["VISUAL"].split()
     except KeyError:
         editor = os.environ.get("EDITOR", "nano").split()
-    logger.info("Opening editor with params: %s", str(editor))
     editor.append(file_name)  # Add the filename at the end of the command
+    logger.info("Opening editor with params: %s", editor)
     subprocess.call(editor)
 
 
