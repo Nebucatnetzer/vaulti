@@ -262,6 +262,27 @@ def write_data_to_temporary_file(data_to_write):
         return temp_file.name
 
 
+def encrypt_and_write_tmp_file(tmp_file: Path, final_file: Path, original_data):
+    yaml = setup_yaml()
+    # Register the constructor to let the yaml loader do the
+    # reencrypting for you Adding it this late to avoid encryption step
+    # before the editor opens
+    yaml.constructor.add_constructor(DECRYPTED_TAG_NAME, constructor_tmp_encrypt)
+    yaml.constructor.add_constructor(INVALID_TAG_NAME, constructor_tmp_invalid)
+    # After the editor is closed, reload the yaml from the tmp-file
+    # (will auto-reencrypt because of the constructors)
+    with open(tmp_file, "r", encoding="utf-8") as file:
+        edited_data = yaml.load(file)
+    # Loop through all the values of the new data, making sure that
+    # any encrypted data unchanged from the original still uses the
+    # original vault encrypted data. This makes your git diffs much
+    # cleaner.
+    final_data = compare_and_update(original_data, edited_data)
+    # Then write the final data back to the original file
+    with open(final_file, "w", encoding="utf-8") as file:
+        yaml.dump(final_data, file)
+
+
 def main(filenames, view_only: bool):
     yaml = setup_yaml()
     for filename in filenames:
@@ -278,36 +299,17 @@ def main(filenames, view_only: bool):
         # Run the rest inside a try-finally block to make sure the decrypted
         # tmp-file is deleted afterwards
         try:
-            # Register the constructor to let the yaml loader do the
-            # reencrypting for you Adding it this late to avoid encryption step
-            # before the editor opens
-            yaml.constructor.add_constructor(
-                DECRYPTED_TAG_NAME, constructor_tmp_encrypt
-            )
-            yaml.constructor.add_constructor(INVALID_TAG_NAME, constructor_tmp_invalid)
-
             temp_filename = write_data_to_temporary_file(decrypted_data)
             created_time = os.stat(temp_filename).st_ctime
             open_file_in_default_editor(temp_filename)
-            # After the editor is closed, reload the yaml from the tmp-file
-            # (will auto-reencrypt because of the constructors)
-            with open(temp_filename, "r", encoding="utf-8") as file:
-                edited_data = yaml.load(file)
-
             # Don't do anything if the file hasn't been changed since its creation
             changed_time = os.stat(temp_filename).st_ctime
             if created_time != changed_time:
-
-                # Loop through all the values of the new data, making sure that
-                # any encrypted data unchanged from the original still uses the
-                # original vault encrypted data. This makes your git diffs much
-                # cleaner.
-                final_data = compare_and_update(original_data, edited_data)
-
-                # Then write the final data back to the original file
-                with open(filename, "w", encoding="utf-8") as file:
-                    yaml.dump(final_data, file)
-
+                encrypt_and_write_tmp_file(
+                    tmp_file=temp_filename,
+                    final_file=filename,
+                    original_data=original_data,
+                )
         finally:
             os.unlink(temp_filename)
 
