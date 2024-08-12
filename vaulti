@@ -115,7 +115,7 @@ def constructor_tmp_encrypt(_, node):
     return TaggedScalar(value=encrypted_value, style="|", tag="!vault")
 
 
-def constructor_tmp_invalid(node):
+def constructor_tmp_invalid(_, node):
     # The invalid tag should just be translated directly back to the original tag
     return TaggedScalar(value=node.value, style="|", tag="!vault")
 
