@@ -81,7 +81,7 @@ def setup_vault(ask_vault_pass: bool):
     loader = DataLoader()
     vault_secret = CLI.setup_vault_secrets(
         loader=loader,
-        vault_ids=C.DEFAULT_VAULT_IDENTITY_LIST,
+        vault_ids=C.DEFAULT_VAULT_IDENTITY_LIST,  # pylint: disable=no-member
         ask_vault_pass=ask_vault_pass,  # Only prompts if you specify --ask-vault-pass
     )
     return VaultLib(vault_secret)
