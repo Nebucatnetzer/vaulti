@@ -237,7 +237,7 @@ def display_yaml_data_and_exit(yaml_data):
     sys.exit(0)
 
 
-def open_file_in_default_editor(file: Path):
+def open_file_in_default_editor(file: str):
     """Get the default editor and open the provided file
 
     Ignores additional parameters provided to the editor.
