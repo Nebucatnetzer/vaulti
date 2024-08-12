@@ -237,19 +237,23 @@ def display_yaml_data_and_exit(yaml_data):
     sys.exit(0)
 
 
-def open_file_in_default_editor(file_name: str):
+def _get_default_editor():
     """Get the default editor and open the provided file
 
     Ignores additional parameters provided to the editor.
     """
-    logger = logging.getLogger("Vaulti")
     try:
         editor = os.environ["VISUAL"].split()
     except KeyError:
         editor = os.environ.get("EDITOR", "nano").split()
-    editor.append(file_name)  # Add the filename at the end of the command
+    return editor[0]
+
+
+def open_file_in_default_editor(file_name: str):
+    logger = logging.getLogger("Vaulti")
+    editor = _get_default_editor()
     logger.info("Opening editor with params: %s", editor)
-    subprocess.call(editor)
+    subprocess.run([editor, file_name], check=True)
 
 
 def write_data_to_temporary_file(data_to_write):
