@@ -531,6 +531,25 @@ spelling = ["pyenchant (>=3.2,<4.0)"]
 testutils = ["gitpython (>3)"]
 
 [[package]]
+name = "pylsp-mypy"
+version = "0.6.8"
+description = "Mypy linter for the Python LSP Server"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pylsp-mypy-0.6.8.tar.gz", hash = "sha256:3f8307ca07d7e253e50e38c5fe31c371ceace0bc33d31c3429fa035d6d41bd5f"},
+    {file = "pylsp_mypy-0.6.8-py3-none-any.whl", hash = "sha256:3ea7c406d0f100317a212d8cd39075a2c139f1a4a2866d4412fe531b3f23b381"},
+]
+
+[package.dependencies]
+mypy = ">=0.981"
+python-lsp-server = ">=1.7.0"
+tomli = ">=1.1.0"
+
+[package.extras]
+test = ["coverage", "pytest", "pytest-cov", "tox"]
+
+[[package]]
 name = "python-lsp-jsonrpc"
 version = "1.1.2"
 description = "JSON RPC 2.0 server library"
@@ -734,6 +753,17 @@ files = [
 ]
 
 [[package]]
+name = "tomli"
+version = "2.0.1"
+description = "A lil' TOML parser"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
+    {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
+]
+
+[[package]]
 name = "tomlkit"
 version = "0.13.0"
 description = "Style preserving TOML library"
@@ -845,4 +875,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "8e0f1d2ed01459ae2730757763c12690b1f835c5cb9231ffc33b1681df4570b5"
+content-hash = "6ed4c65b0d4ed6d41a331b4d6a0a012c67f5c86d19b2b95887f74e14b00694f3"

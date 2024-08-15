@@ -17,6 +17,7 @@ pylint = "^3.2.6"
 black = "^24.8.0"
 mypy = "^1.11.1"
 python-lsp-server = "^1.11.0"
+pylsp-mypy = "^0.6.8"
 
 [tool.pylint]
 max-line-length = 88
