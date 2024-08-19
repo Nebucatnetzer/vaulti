@@ -58,13 +58,13 @@ from typing import IO
 from typing import Iterable
 from typing import Union
 
-from ansible.parsing.vault import VaultLib
 
 from ansible import constants as C
 from ansible.cli import CLI
 from ansible.errors import AnsibleError
 from ansible.parsing.dataloader import DataLoader
 from ansible.parsing.vault import AnsibleVaultError
+from ansible.parsing.vault import VaultLib
 
 from ruamel.yaml import ScalarNode
 from ruamel.yaml import YAML
