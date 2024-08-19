@@ -62,7 +62,9 @@ from ansible.parsing.vault import VaultLib
 
 from ansible import constants as C
 from ansible.cli import CLI
+from ansible.errors import AnsibleError
 from ansible.parsing.dataloader import DataLoader
+from ansible.parsing.vault import AnsibleVaultError
 
 from ruamel.yaml import ScalarNode
 from ruamel.yaml import YAML
@@ -103,7 +105,7 @@ def constructor_tmp_decrypt(_: RoundTripConstructor, node: ScalarNode) -> Tagged
     try:
         # pylint: disable=possibly-used-before-assignment
         decrypted_value = VAULT.decrypt(vaulttext=node.value).decode("utf-8")
-    except:
+    except (AnsibleError, AnsibleVaultError):
         # If the value cannot be decrypted for some reason, just use the
         # original value and add an invalid tag
         return TaggedScalar(value=node.value, style="|", tag=INVALID_TAG_NAME)
@@ -156,7 +158,7 @@ def _process_commented_map(
                     original_data=original_data[key],
                     reencrypted_data=reencrypted_data[key],
                 )
-            except:
+            except (AnsibleError, AnsibleVaultError):
                 reencrypted_data[key] = reencrypted_data[key]
     return original_data, reencrypted_data
 
@@ -176,7 +178,7 @@ def _process_commented_seq(
                 original_data=original_data[i],
                 reencrypted_data=reencrypted_data[i],
             )
-        except:
+        except (AnsibleError, AnsibleVaultError):
             reencrypted_data[i] = reencrypted_data[i]
     return original_data, reencrypted_data
 
