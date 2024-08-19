@@ -56,6 +56,10 @@ no_implicit_reexport = true
 # This one can be tricky to get passing if you use a lot of untyped libraries
 warn_return_any = true
 
+[[tool.mypy.overrides]]
+module = "ansible.*"
+ignore_missing_imports = true
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
